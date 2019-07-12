@@ -2,11 +2,18 @@
 function redux(reducer, initialState, stream) {
   let state = initialState;
   let action;
+  const dispatch = function (action) {
+    state = reducer(state, action)
+    return state
+  }
+  const getState = function () {
+    return state
+  }
   for(let i = 0; i < stream.length; i++) {
     let action = stream[i];
-    state = reducer(state, action);
+    dispatch(action)
   }
-  return state;
+  return getState();
 }
 
 export default redux
