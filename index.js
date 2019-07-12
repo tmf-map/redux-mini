@@ -1,11 +1,12 @@
-// reduce :: (a -> b -> a) -> a -> [b] -> a
-function reduce(reducer, initialData, allData) {
-  let accumulator = initialData;
-  for(let i = 0; i < allData.length; i++) {
-    accumulator = reducer(accumulator, allData[i])
+// redux :: (a -> b -> a) -> a -> [b] -> a
+function redux(reducer, initialState, stream) {
+  let state = initialState;
+  let action;
+  for(let i = 0; i < stream.length; i++) {
+    let action = stream[i];
+    state = reducer(state, action);
   }
-  return accumulator;
+  return state;
 }
 
-console.log(reduce((a, b) => a + b, 0, [1, 2, 3, 4, 5]) === 15)
-console.log(reduce((a, b) => a + b, 10, [1, 2, 3, 4, 5]) === 25)
+export default redux
