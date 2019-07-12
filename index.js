@@ -1,4 +1,4 @@
-// redux :: (a -> b -> a) -> a -> [b] -> a
+// createStore :: (a -> b -> a) -> a -> [b] -> c
 function createStore(reducer, initialState, stream) {
   let state = initialState;
   let action;
