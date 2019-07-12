@@ -1,4 +1,4 @@
-import redux from './index.js'
+import { createStore } from './index.js'
 
 //====================================
 // How to use
@@ -27,4 +27,6 @@ const stream = [
   //...
 ];
 
-console.log(redux(reducer, initialState, stream)) // {name: 'Robbie', age: 16}
+const store = createStore(reducer, initialState, stream)
+
+console.log(store.getState()) // {name: 'Robbie', age: 16}
