@@ -11,7 +11,6 @@ function createStore(reducer, initialState, stream) {
     dispatch(action)
   }
   return {
-    dispatch,
     getState
   };
 }
