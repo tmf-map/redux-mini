@@ -1,5 +1,5 @@
 // redux :: (a -> b -> a) -> a -> [b] -> a
-function redux(reducer, initialState, stream) {
+function createStore(reducer, initialState, stream) {
   let state = initialState;
   let action;
   const dispatch = action => {
@@ -10,7 +10,12 @@ function redux(reducer, initialState, stream) {
     let action = stream[i];
     dispatch(action)
   }
-  return getState();
+  return {
+    dispatch,
+    getState
+  };
 }
 
-export default redux
+export {
+  createStore
+}
