@@ -21,12 +21,17 @@ function reducer(state, action) {
 }
 
 const initialState = {name: 'Kimi', age: 18};
+const store = createStore(reducer, initialState)
+
+// mock the event stream call
 const stream = [
   {type: 'SET_NAME', payload: {name: 'Robbie'}},
   {type: 'SET_AGE', payload: {age: 16}}
   //...
 ];
-
-const store = createStore(reducer, initialState, stream)
+for(let i = 0; i < stream.length; i++) {
+  let action = stream[i];
+  store.dispatch(action)
+}
 
 console.log(store.getState()) // {name: 'Robbie', age: 16}
