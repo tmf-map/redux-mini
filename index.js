@@ -5,13 +5,14 @@ function createStore(reducer, initialState, stream) {
   const dispatch = action => {
     state = reducer(state, action)
   }
-  const getState = () => state;
   for(let i = 0; i < stream.length; i++) {
     let action = stream[i];
     dispatch(action)
   }
   return {
-    getState
+    getState: function() {
+      return state;
+    }
   };
 }
 
