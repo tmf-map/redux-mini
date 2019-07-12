@@ -1,4 +1,4 @@
-// reduce :: ((a, b) -> a) -> a -> [b] -> a
+// reduce :: (a -> b -> a) -> a -> [b] -> a
 function reduce(reducer, initialData, allData) {
   let accumulator = initialData;
   for(let i = 0; i < allData.length; i++) {
