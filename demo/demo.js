@@ -31,6 +31,13 @@ function render(state) {
 
 render(store.getState()) // {name: 'Kimi', age: 18}
 
+// enhance dispatch function
+let next = store.dispatch
+store.dispatch = function dispatchAndLog(action) {
+  console.log('dispatching', action)
+  next(action)
+}
+
 // event stream call
 window.setName = function () {
   const action = {type: 'SET_NAME', payload: {name: 'Robbie'}}
