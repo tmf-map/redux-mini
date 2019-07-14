@@ -23,7 +23,7 @@ function reducer(state, action) {
 const initialState = {name: 'Kimi', age: 18};
 const store = createStore(reducer, initialState)
 
-console.log('default value', store.getState()) // {name: 'Robbie', age: 16}
+console.log('default value', store.getState()) // {name: 'Kimi', age: 18}
 
 // event stream call
 window.setName = function () {
