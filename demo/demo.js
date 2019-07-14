@@ -32,17 +32,18 @@ function render(state) {
 render(store.getState()) // {name: 'Kimi', age: 18}
 
 // common function for enhance dispatch
-function changeDispatchByMiddleware (middleware) {
+function enhanceDispatchByMiddleware (middleware) {
   let next = store.dispatch
-  store.dispatch = middleware(next)
+  store.dispatch = middleware(store)(next) // store cuz some middleware need getState
 }
 
 // specific dispatch function
-const dispatchAndLog = next => action => {
+const dispatchAndLog = store => next => action => {
+  console.log('current state', store.getState())
   console.log('dispatching', action)
   next(action)
 }
-changeDispatchByMiddleware(dispatchAndLog)
+enhanceDispatchByMiddleware(dispatchAndLog)
 
 // event stream call
 window.setName = function () {
