@@ -11,8 +11,8 @@ function createStoreWithoutEnhancers (reducer, initialState) {
   };
 }
 
-// enhanceDispatchByMiddleware :: [d] -> c
-function enhanceDispatchByMiddleware (middlewares) {
+// applyMiddleware :: [a] -> (b -> b)
+function applyMiddleware (middlewares) {
   return function (store) {
     middlewares.forEach(middleware => {
       let next = store.dispatch
@@ -30,5 +30,5 @@ function createStore (reducer, initialState, enhancers) {
 
 export {
   createStore,
-  enhanceDispatchByMiddleware
+  applyMiddleware
 }

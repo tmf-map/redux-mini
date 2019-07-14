@@ -1,4 +1,4 @@
-import { createStore, enhanceDispatchByMiddleware } from '../index.js'
+import { createStore, applyMiddleware } from '../index.js'
 import { logger, collectError } from './middlewares.js'
 
 //====================================
@@ -20,9 +20,10 @@ function reducer(state, action) {
       }
   }
 }
-
 const initialState = {name: 'Kimi', age: 18};
-const store = createStore(reducer, initialState, enhanceDispatchByMiddleware([logger, collectError]))
+const enhancers = applyMiddleware([logger, collectError])
+
+const store = createStore(reducer, initialState, enhancers)
 
 const dataElem = document.getElementById('data')
 function render(state) {
