@@ -1,4 +1,5 @@
 import { createStore, enhanceDispatchByMiddleware } from '../index.js'
+import { logger, collectError } from './middlewares.js'
 
 //====================================
 // How to use
@@ -21,26 +22,7 @@ function reducer(state, action) {
 }
 
 const initialState = {name: 'Kimi', age: 18};
-const store = createStore(reducer, initialState)
-
-// Middleware1
-const logger = store => next => action => {
-  console.log('Middleware1: logger', store.getState())
-  console.log('Middleware1: logger action:', action)
-  console.log('m1-next', next)
-  next(action)
-}
-// Middleware2
-const collectError = store => next => action => {
-  try {
-    console.log('Middleware2: collectError', store.getState())
-    console.log('m2-next', next)
-    next(action)
-  } catch (err) {
-    console.error('Error!', err)
-  }
-}
-enhanceDispatchByMiddleware(store, [logger, collectError])
+const store = createStore(reducer, initialState, enhanceDispatchByMiddleware([logger, collectError]))
 
 const dataElem = document.getElementById('data')
 function render(state) {
