@@ -1,4 +1,4 @@
-import { createStore } from './index.js'
+import { createStore } from '../index.js'
 
 //====================================
 // How to use
@@ -23,15 +23,16 @@ function reducer(state, action) {
 const initialState = {name: 'Kimi', age: 18};
 const store = createStore(reducer, initialState)
 
-// mock the event stream call
-const stream = [
-  {type: 'SET_NAME', payload: {name: 'Robbie'}},
-  {type: 'SET_AGE', payload: {age: 16}}
-  //...
-];
-for(let i = 0; i < stream.length; i++) {
-  let action = stream[i];
-  store.dispatch(action)
-}
+console.log('default value', store.getState()) // {name: 'Robbie', age: 16}
 
-console.log(store.getState()) // {name: 'Robbie', age: 16}
+// event stream call
+window.setName = function () {
+  const action = {type: 'SET_NAME', payload: {name: 'Robbie'}}
+  store.dispatch(action)
+  console.log('after setName', store.getState())
+}
+window.setAge = function () {
+  const action = {type: 'SET_AGE', payload: {age: 16}}
+  store.dispatch(action)
+  console.log('after setAge', store.getState())
+}
