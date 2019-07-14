@@ -11,6 +11,13 @@ function createStore(reducer, initialState) {
   };
 }
 
+// common function for enhance dispatch
+function enhanceDispatchByMiddleware (store, middleware) {
+  let next = store.dispatch
+  store.dispatch = middleware(store)(next) // store cuz some middleware need getState
+}
+
 export {
-  createStore
+  createStore,
+  enhanceDispatchByMiddleware
 }

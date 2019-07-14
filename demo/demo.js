@@ -1,4 +1,4 @@
-import { createStore } from '../index.js'
+import { createStore, enhanceDispatchByMiddleware } from '../index.js'
 
 //====================================
 // How to use
@@ -23,6 +23,14 @@ function reducer(state, action) {
 const initialState = {name: 'Kimi', age: 18};
 const store = createStore(reducer, initialState)
 
+// Middleware1
+const dispatchAndLog = store => next => action => {
+  console.log('current state', store.getState())
+  console.log('dispatching', action)
+  next(action)
+}
+enhanceDispatchByMiddleware(store, dispatchAndLog)
+
 const dataElem = document.getElementById('data')
 function render(state) {
   console.log('state', state)
@@ -30,20 +38,6 @@ function render(state) {
 }
 
 render(store.getState()) // {name: 'Kimi', age: 18}
-
-// common function for enhance dispatch
-function enhanceDispatchByMiddleware (middleware) {
-  let next = store.dispatch
-  store.dispatch = middleware(store)(next) // store cuz some middleware need getState
-}
-
-// specific dispatch function
-const dispatchAndLog = store => next => action => {
-  console.log('current state', store.getState())
-  console.log('dispatching', action)
-  next(action)
-}
-enhanceDispatchByMiddleware(dispatchAndLog)
 
 // event stream call
 window.setName = function () {
