@@ -40,8 +40,7 @@ const collectError = store => next => action => {
     console.error('Error!', err)
   }
 }
-enhanceDispatchByMiddleware(store, logger)
-enhanceDispatchByMiddleware(store, collectError)
+enhanceDispatchByMiddleware(store, [logger, collectError])
 
 const dataElem = document.getElementById('data')
 function render(state) {
