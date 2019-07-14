@@ -23,16 +23,22 @@ function reducer(state, action) {
 const initialState = {name: 'Kimi', age: 18};
 const store = createStore(reducer, initialState)
 
-console.log('default value', store.getState()) // {name: 'Kimi', age: 18}
+const dataElem = document.getElementById('data')
+function render(state) {
+  console.log('state', state)
+  dataElem.innerHTML = `State: ${JSON.stringify(state)}`
+}
+
+render(store.getState()) // {name: 'Kimi', age: 18}
 
 // event stream call
 window.setName = function () {
   const action = {type: 'SET_NAME', payload: {name: 'Robbie'}}
   store.dispatch(action)
-  console.log('after setName', store.getState())
+  render(store.getState())
 }
 window.setAge = function () {
   const action = {type: 'SET_AGE', payload: {age: 16}}
   store.dispatch(action)
-  console.log('after setAge', store.getState())
+  render(store.getState())
 }
