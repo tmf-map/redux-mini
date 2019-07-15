@@ -14,7 +14,7 @@ function createStoreWithoutEnhancers (reducer, initialState) {
 // applyMiddleware :: [a] -> (b -> b)
 function applyMiddleware (middlewares) {
   return function (store) {
-    middlewares.forEach(middleware => {
+    middlewares.reverse().forEach(middleware => {
       let next = store.dispatch
       store.dispatch = middleware(store)(next) // store cuz some middleware need getState
     })
