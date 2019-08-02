@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from '../index.js'
+import { createStore, applyMiddleware, combineReducer } from '../index.js'
 import { logger, collectError } from './middlewares.js'
 
 //====================================
@@ -6,24 +6,32 @@ import { logger, collectError } from './middlewares.js'
 //====================================
 
 // reducer :: a -> b -> a
-function reducer(state, action) {
+function reducerName (state = {name: 'Kimi'}, action) {
   switch (action.type) {
     case 'SET_NAME':
       return {
         ...state,
         name: action.payload.name
       }
+  }
+  return state
+}
+function reducerAge (state = {age: 18}, action) {
+  switch (action.type) {
     case 'SET_AGE':
       return {
         ...state,
         age: action.payload.age
       }
   }
+  return state
 }
-const initialState = {name: 'Kimi', age: 18};
+// const initialState = {name: 'Kimi', age: 18};
 const enhancers = applyMiddleware([logger, collectError])
 
-const store = createStore(reducer, initialState, enhancers)
+const reducer = combineReducer({name: reducerName,age: reducerAge})
+
+const store = createStore(reducer, enhancers)
 
 const dataElem = document.getElementById('data')
 function render(state) {
