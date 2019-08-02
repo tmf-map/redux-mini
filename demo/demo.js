@@ -6,7 +6,7 @@ import { logger, collectError } from './middlewares.js'
 //====================================
 
 // reducer :: a -> b -> a
-function reducerName (state, action) {
+function reducerName (state = {name: 'Kimi'}, action) {
   switch (action.type) {
     case 'SET_NAME':
       return {
@@ -16,7 +16,7 @@ function reducerName (state, action) {
   }
   return state
 }
-function reducerAge (state, action) {
+function reducerAge (state = {age: 18}, action) {
   switch (action.type) {
     case 'SET_AGE':
       return {

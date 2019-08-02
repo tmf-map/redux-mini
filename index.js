@@ -1,6 +1,6 @@
 // createStoreWithoutEnhancers :: (a -> b -> a) -> a -> c
 function createStoreWithoutEnhancers (reducer) {
-  let state = {name:{name: 'Kimi'}, age:{age: 18}} ;
+  let state = {} ;
   return {
     dispatch: function(action) {
       state = reducer(state, action)
@@ -24,8 +24,10 @@ function applyMiddleware (middlewares) {
 
 // createStore :: (a -> b -> a) -> a -> ([d] -> c) -> c
 function createStore (reducer, enhancers) {
-  const store = createStoreWithoutEnhancers(reducer)
-  return enhancers(store)
+  const store = createStoreWithoutEnhancers(reducer);
+  //此处的功能是通过dispatch一个初始的action，执行一遍reducer，初始化state
+  store.dispatch({ type: '@@redux/INIT' });
+  return enhancers(store);
 }
 
 function combineReducer(reducers) {
