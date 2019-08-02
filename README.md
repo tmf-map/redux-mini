@@ -13,7 +13,7 @@ ___
 #### 1.1 为什么要用中间件
 原生的redux中的Store.dispatch，它是不支持异步的，且功能是单一的。举个例子，当我们调用了后端的API，然后取得返回值，此时我想拿disapatch来执行action。保存dispatch的上下文没有了。怎么办，没法dispatch了? 可以用闭包啊，闭包可以保存dispatch的引用，存在内存不被释放，这样回来不就调用dispatch了吗。-- 此处膜拜中间件设计者
 
-**中间件机制的本质就是一个闭包，通过闭包将dispatch保存在内存,并通过每层中间件实时更新dispatch。applyMiddleware方法的主要任务就是通过一系列的中间件改造原生dispatch为满足特定需求的dispatch。**
+**中间件机制的本质就是一个闭包，通过闭包将原生dispatch保存在内存,并通过每层中间件封装新的dispatch。applyMiddleware方法的主要任务就是通过一系列的中间件改造原生dispatch为满足特定需求的dispatch。**
 
 ### 2.理解中间件预备知识
 Redux 提供了一个叫 applyMiddleware() 的方法，可以应用多个中间件，要想理解applyMiddleware，首要理解compose()的用法，而要想看懂compose()函数，首先要理解arr.reduceRight()方法
@@ -118,6 +118,7 @@ applyMiddleware(middlewares)执行后，传人(createStore)(reducer, preloadedSt
 
 > 上面的代码执行到第二行 var store = createStore(reducer, preloadedState, enhancer)
 此时enhance为undefined，此时返回的是一个没有绑定任何中间件的store，也就是最开始原生的store。
+
 - 需要注意的地方
 
 ```
@@ -133,7 +134,7 @@ applyMiddleware(middlewares)执行后，传人(createStore)(reducer, preloadedSt
 
 主要是为了保证各个中间件共享dispatch。如果写成dispatch: store.dispatch那么各层拿到的dispatch都将和内层原生dispatch相同，无法动态的更新。
 
-`dispatch = compose(...chain)(store.dispatch)`此处的store依旧是原生store，拿到的dispatch也是原生的dispatch;
+`dispatch = compose(...chain)(store.dispatch)`此处的store依旧是原生store，拿到的store.dispatch也是原生的dispatch;
 
 #### 3.1 中间件的庐山真面目
 中间件使用了函数式编程中函数柯理化的功能，每个中间件中的每步返回都是一个接受单参的函数。
@@ -143,6 +144,8 @@ const thunk = store => next => action =>
 typeof action === 'function' ? action(store.dispatch, store.getState) : next(action);
 ```
 > redux-thunk在action为function的时候可以执行 function async(dispatch,getState) => {fetch....};当不是函数的时候调用next(action)。假如系统只用了Thunk中间件。那么next(action)就是dispatch同步action，action是对象。
+
+
 ```
 const logger = store => next => action => {
   console.log('Middleware1: logger', store.getState())
@@ -152,19 +155,19 @@ const logger = store => next => action => {
 }
 ```
 
-- applyMiddleware中的middlewareAPI就是等价这里的store,`chain = middlewares.map(middleware => middleware(middlewareAPI))`,就是剥离最外层的函数。
+- store: applyMiddleware中的middlewareAPI就是等价这里的store,`chain = middlewares.map(middleware => middleware(middlewareAPI))`,就是剥离最外层的函数。
 
-- next是内层已经封装好的dispatch,如果是洋葱图里最里面的一层，那么next就是原生的dipatch
+- next: next是内层已经封装好的dispatch,如果是洋葱图里最里面的一层，那么next就是原生的dipatch
 ![20190801154435.png](https://raw.githubusercontent.com/USTC-Han/picMap/master/img/20190801154435.png)
 
-- action是我们dispatch的action
+- action: action是我们dispatch的action
 
 上面的洋葱图大致说明了，中间件层层嵌套，最外层调用store.dispatch(action)，通过调用next()一层层的往里剥洋葱，直到原生的dipatch，然后调用action，此时再从里到外回溯。
 
 #### 3.2 让流程更易懂点
 - 首先要明确creatStore的功能，然后再明确applyMiddleware的功能，再就是理解中间件函数结构，这就齐活了。
 - creatStore的功能有两个，一个是生成原生的store，将middlewareAPI传给所有的中间件。二是执行enhancer()将中间件封装，生成封装后dispatch的store。
-- applyMiddleware的功能利用闭包让所有中间件共享store。在中间件未执行完store会一直保存在内存，最终封装原生dispatch为新的dispatch 
+- applyMiddleware的功能利用闭包让所有中间件共享middlewareAPI。在中间件未执行完store会一直保存在内存，最终封装原生dispatch为新的dispatch 
 - 中间件函数如 3.1所讲
 
 #### 是不是还是有点蒙
